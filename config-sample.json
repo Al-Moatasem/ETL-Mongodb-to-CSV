@@ -1,0 +1,9 @@
+{
+    "mongodb": {
+        "username": "",
+        "password": "",
+        "server": "",
+        "database": "sample_airbnb",
+        "collection": "listingsAndReviews"
+    }
+}
