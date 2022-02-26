@@ -74,3 +74,12 @@ def log_etl_last_scraped_date(date):
     with open(etl_config_file, 'w') as etl_confg:
 
         json.dump(data, etl_confg)
+
+def validate_date_input(input_date, date_format, message):
+
+    try:
+        date = datetime.strptime(input_date, date_format)
+        return date
+    except Exception as e:
+        print(message)
+        print(e)
