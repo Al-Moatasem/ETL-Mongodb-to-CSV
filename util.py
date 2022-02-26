@@ -22,16 +22,16 @@ def export_data_csv(data, output_path):
     df.to_csv(output_path, index=False)
 
 
-def select_listing_reviews_by_last_scraped_date(collection, date, columns=None):
+def select_listing_reviews_by_last_scraped_date(collection, date, field_list_state=None, fields_list=[]):
     # start_date = datetime.strptime(date, '%Y%m%d')
     start_date = date
     end_date = start_date + timedelta(days=1)
     filter = {'last_scraped': {'$gte': start_date, '$lt': end_date}}
 
-    if columns == 'exclude reviews':
-        projection = {'reviews': False}
-    elif columns == 'id and reviews':
-        projection = ['id', 'reviews']
+    if field_list_state == 'exclude':
+        projection = dict.fromkeys(fields_list, False)
+    elif field_list_state == 'include':
+        projection = fields_list
     else:
         projection = {}
 
