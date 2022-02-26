@@ -40,13 +40,13 @@ def select_listing_reviews_by_last_scraped_date(collection, date, field_list_sta
     return listing_reviews
 
 
-def get_first_date_for_last_scraped(collection):
-    """
-    get the first date on the dataset on the field last_scraped
-    """
-    last_scraped_dates = collection.find({}, ['last_scraped']).sort(
-        "last_scraped", 1).distinct('last_scraped')
-    return last_scraped_dates[0]
+def get_first_value_in_field(collection, field_name):
+
+    values = collection.find(
+            {}, 
+            [field_name]).sort( field_name, 1).distinct(field_name)
+    
+    return values[0]
 
 
 def get_last_extraction_date():
