@@ -2,10 +2,11 @@ import json
 import util
 from sys import argv
 from datetime import datetime, timedelta
+from log import log_msg
 
 def main(input_date = None):
     
-    print('Validating ...')
+    log_msg('Starting the ETL job')
     
     if len(input_date) > 2:
         print('Too many arguments were passed, Please enter a valid date (YYYYMMDD)')
@@ -43,12 +44,10 @@ def main(input_date = None):
                 )
     date_str = datetime.strftime(date, '%Y%m%d')
 
-    print('Initiating connection to the database')
     client = util.create_mongodb_client(db_username, db_password, db_server)
     colc_airbnb_lst_reviews = util.use_db_collection(
         client, database, collection)
 
-    print(f'Extracting listing reviews last scraped on {date}')
     listing_reviews = util.select_listing_reviews_by_last_scraped_date(
                             colc_airbnb_lst_reviews, 
                             date, 
@@ -57,10 +56,8 @@ def main(input_date = None):
                         )
 
     csv_output_path = f'Output/Listings/Listings_{date_str}.csv'
-    print(f'Saving data into {csv_output_path}')
     util.export_data_csv(listing_reviews, csv_output_path)
 
-    print(f'Extracting only ids and reviews last scraped on {date}')
     ids_and_reviews = util.select_listing_reviews_by_last_scraped_date(
                             colc_airbnb_lst_reviews, 
                             date, 
@@ -69,11 +66,10 @@ def main(input_date = None):
                         )
 
     csv_output_path = f'Output/Reviews/Reviews_{date_str}.csv'
-    print(f'Saving data into {csv_output_path}')
     util.export_data_csv(ids_and_reviews, csv_output_path)
 
-    print('Logging the last scraped date')
     util.log_etl_last_scraped_date(date_str)
+    log_msg('Ending of the ETL job')
 
 
 # output_file_path = f'Output/Listings/Listing_{output_date_format}.csv'

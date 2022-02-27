@@ -2,9 +2,11 @@ import json
 import pymongo
 import pandas as pd
 from datetime import datetime, timedelta
+from log import log_msg
 
 
 def create_mongodb_client(db_username, db_password, db_server):
+    log_msg('Initiating connection to the database')
     client = pymongo.MongoClient(
         f"mongodb+srv://{db_username}:{db_password}@{db_server}")
     return client
@@ -18,12 +20,14 @@ def use_db_collection(client, database, collection):
 
 
 def export_data_csv(data, output_path):
+    log_msg(f'Saving data into {output_path}')
     df = pd.DataFrame(data)
     df.to_csv(output_path, index=False)
 
 
 def select_listing_reviews_by_last_scraped_date(collection, date, field_list_state=None, fields_list=[]):
     # start_date = datetime.strptime(date, '%Y%m%d')
+    log_msg(f'Extracting data last scraped on {date}')
     start_date = date
     end_date = start_date + timedelta(days=1)
     filter = {'last_scraped': {'$gte': start_date, '$lt': end_date}}
@@ -61,6 +65,7 @@ def get_last_extraction_date():
 
 
 def log_etl_last_scraped_date(date):
+    log_msg('Updating the last scraped date')
     etl_config_file = 'etl_job_config.json'
     # reading the json file
     with open(etl_config_file, 'r') as etl_confg:
